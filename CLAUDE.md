@@ -56,12 +56,12 @@ Windows 桌面版 LOL 对战分析平台。基于 [LeagueAkari](https://github.c
 
 ## 3. 数据源与 ToS 边界(硬约束)
 
-| 数据 | 来源 | 状态 |
-|---|---|---|
-| 本体胜率 / 对位克制 | `lol-api-champion.op.gg`(上游已有 `OpggHttpApiAxiosHelper`) | ✅ 复用,勿重写 |
-| 搭档联动 synergy | `mcp-api.op.gg/mcp` → `lol_get_champion_synergies` | ✅ OP.GG 官方发布,MIT |
-| 英雄静态数据/图标 | Data Dragon / CommunityDragon | ✅ 官方,无限速 |
-| **lolalytics** | `a3.lolalytics.com` | ❌ **绝对禁止引入** |
+| 数据                | 来源                                                        | 状态                  |
+| ------------------- | ----------------------------------------------------------- | --------------------- |
+| 本体胜率 / 对位克制 | `lol-api-champion.op.gg`(上游已有 `OpggHttpApiAxiosHelper`) | ✅ 复用,勿重写        |
+| 搭档联动 synergy    | `mcp-api.op.gg/mcp` → `lol_get_champion_synergies`          | ✅ OP.GG 官方发布,MIT |
+| 英雄静态数据/图标   | Data Dragon / CommunityDragon                               | ✅ 官方,无限速        |
+| **lolalytics**      | `a3.lolalytics.com`                                         | ❌ **绝对禁止引入**   |
 
 **lolalytics 明文声明**:"All data inside this API is Copyright LoLalytics Limited and may not be
 used by third parties." 不管它数据多好、不管 DraftGap 是否在用 —— 本项目不碰。
@@ -104,11 +104,15 @@ used by third parties." 不管它数据多好、不管 DraftGap 是否在用 —
 ### 本项目新增模块
 
 ```
-src/shared/draft-engine/    纯函数,零 I/O、零 Electron 依赖 —— 必须能在 Linux 上单测
-src/shared/draft-data/      数据获取与缓存
+src/shared/draft-engine/         纯函数,零 I/O、零 Electron 依赖 —— 必须能在 Linux 上单测
+src/shared/draft-data/           数据获取、缓存、数据集分发
 src/main/shards/draft-advisor/   接 champ-select,喂数据给引擎
-tools/backtest/             回测
-tools/lcu-replay/           LCU 录制/回放
+src/renderer/src-ongoing-game-window/DraftAdvisorPanel.vue   推荐面板
+tools/advise.ts                  CLI
+tools/refresh-stats.ts           本地组装数据集
+tools/publish-datasets.ts        CI 发布数据集
+tools/lcu-record.ts              Windows 上录 champ-select 报文
+tools/lcu-replay.ts              任何环境回放
 ```
 
 **`draft-engine` 必须保持纯净**:`advise({allies, enemies, role}) → 排序结果`。
@@ -119,28 +123,34 @@ tools/lcu-replay/           LCU 录制/回放
 
 ## 5. 开发与测试
 
+**当前进度、下一步、以及为什么是这个下一步:`docs/ROADMAP.md`。**
+**环境设置(尤其是换到 Windows)、录制回放工作流:`docs/DEVELOPMENT.md`。**
+开工前先读这两个,里面有一批实测数字,决定了哪些方向值得做、哪些已经证明是死路。
+
 无 LoL 客户端的环境(Linux / CI)下可完整验证:
 
 ```bash
 yarn vitest run src/shared/draft-engine   # 引擎单测
 yarn vitest run src/shared/draft-data     # 数据层(会真打 op.gg)
 yarn advise --allies Lulu,Jinx --enemies Ahri,Leona --role jungle
-yarn backtest                             # mask-one-pick 回测
+yarn lcu-replay fixtures/champ-select-sample.json   # 回放录好的选人报文
 ```
 
-需要真实 Windows + 客户端:`yarn dev`(Electron + LCU)、`yarn build:win`、原生模块重编译。
+需要真实 Windows + 客户端:`yarn dev`(Electron + LCU)、`yarn build:win`、
+原生模块重编译、`yarn lcu-record`。
 
 **Docker/VM 跑不了** —— Vanguard 是内核态驱动,容器加载不了,Riot 也封虚拟机。
-所以有了 `tools/lcu-replay/`:在 Windows 上录一次 champ-select 报文,之后在任何环境回放。
+所以有了 `tools/lcu-record.ts` / `tools/lcu-replay.ts`:在 Windows 上录一次 champ-select 报文,
+之后在任何环境回放。`LEAGUESOL_LCU_ENDPOINT` 把应用指向回放服务器。
 
 ### 回测基准
 
 选角推荐的效果对照(champions-only 输入的天花板约 57%):
 
-| | top-1 | log loss | ECE |
-|---|---|---|---|
-| DraftGap | 54.66% | 0.6869 | 0.0199 |
-| LoLDraftAI | 55.88% | 0.6829 | 0.0088 |
+|            | top-1  | log loss | ECE    |
+| ---------- | ------ | -------- | ------ |
+| DraftGap   | 54.66% | 0.6869   | 0.0199 |
+| LoLDraftAI | 55.88% | 0.6829   | 0.0088 |
 
 **ECE(校准误差)比准确率更重要** —— 准确率的可提升空间只有 1-2pp,而现有工具的置信度普遍与实际
 结果不相关。推荐结果必须可拆解(本体 / 各队友联动 / 各敌方克制),并标注每项样本量。

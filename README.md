@@ -6,12 +6,13 @@ Match history and cross-region lookup, premade detection, teammate and opponent 
 champion select, and item/rune recommendations — plus the feature this project exists for:
 
 **Draft recommendation.** Given who has already been picked on both teams, which champion should
-*you* pick? Not a tier list, and not a context-free counter table: a ranking that accounts for how a
+_you_ pick? Not a tier list, and not a context-free counter table: a ranking that accounts for how a
 champion pairs with your bot lane or jungler, how it fares into each opponent, and — unusually —
-how much *you* have actually played it.
+how much _you_ have actually played it.
 
-> **Status: in development.** The recommendation engine and its data layer are implemented and
-> tested; the champion-select integration and the UI are not finished yet.
+> **Status: in development.** The recommendation engine, its data layer, the champion-select
+> integration and the panel are all implemented and unit-tested, but nothing has yet been run
+> against a real client. There is no release build.
 
 ---
 
@@ -23,14 +24,14 @@ Existing draft tools are quite good and share two specific weaknesses.
 who else was in the game, by the two champions' different player-base skill distributions, and by
 pick order — a champion picked last into a known matchup shows an inflated win rate that is not
 caused by the matchup. Worse, a duo win rate mostly reflects whichever champion is individually
-strong this patch. LeagueSol works with *residuals* — how much a pairing over-performs what the two
+strong this patch. LeagueSol works with _residuals_ — how much a pairing over-performs what the two
 champions would achieve with no interaction at all — so a strong champion does not appear to
 synergise with the entire roster.
 
 **They recommend champions you cannot play.** Both DraftGap and LoLDraftAI state outright that they
 do not model player skill or champion mastery. The gap between the best published pairwise model and
 the best published neural model is about one percentage point of accuracy; the gap between "the
-optimal jungler" and "the optimal jungler *you have played more than four times*" is considerably
+optimal jungler" and "the optimal jungler _you have played more than four times_" is considerably
 larger. The client already knows which champions you own and how often you have played them, so this
 costs nothing but is left on the table everywhere.
 
@@ -69,15 +70,15 @@ improvements, but published results put the ceiling for champions-only draft pre
 
 ## Data sources
 
-| Data | Source |
-|---|---|
-| Champion win rates, lane counters | [op.gg champion API](https://op.gg) |
-| Ally duo synergy | [op.gg MCP endpoint](https://github.com/opgginc/opgg-mcp) |
-| Champion metadata and assets | Riot Data Dragon / Community Dragon |
+| Data                              | Source                                                    |
+| --------------------------------- | --------------------------------------------------------- |
+| Champion win rates, lane counters | [op.gg champion API](https://op.gg)                       |
+| Ally duo synergy                  | [op.gg MCP endpoint](https://github.com/opgginc/opgg-mcp) |
+| Champion metadata and assets      | Riot Data Dragon / Community Dragon                       |
 
 Champion statistics are provided by **OP.GG**. Note that op.gg has no China region — on Tencent
 servers the statistics shown are from other regions, and the UI labels them as such. Matchup and
-synergy *differences* transfer between regions because they are driven by champion kits, which are
+synergy _differences_ transfer between regions because they are driven by champion kits, which are
 identical on a given patch; absolute win rates, pick rates and tier lists do not transfer and are
 not shown in that situation.
 
@@ -125,6 +126,11 @@ a real game.
 
 Set `LEAGUESOL_LIVE_TESTS=0` to skip the tests that hit the network. If you are behind a proxy, set
 `https_proxy` — Node's `fetch` does not pick it up on its own, so the test setup wires it in.
+
+See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the Windows setup, the native module, and the
+record/replay workflow that makes champion-select changes testable without queueing a game.
+[docs/ROADMAP.md](docs/ROADMAP.md) records what is done, what is next, and the measurements that
+decided the order.
 
 ---
 
