@@ -1,0 +1,51 @@
+node_modules
+dist
+out
+storybook-static
+bench-results/
+*.log*
+*.tsbuildinfo
+examples
+images
+addons/build
+.yarn/install-state*.gz
+native/*/build/
+native/*/*.tgz
+
+# Keep native package bootstrap artifacts checked in.
+!native/*/addons/
+!native/*/addons/*.node
+!native/*/dist/
+!native/*/dist/**/*.js
+!native/*/dist/**/*.d.ts
+native/*/dist/*.tsbuildinfo
+rabi-*
+todolist.md
+todolist.txt
+feedback-platform/
+.claude/settings.local.json
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# others
+.playwright-mcp
+
+# Local record of the upstream baseline commit
+.upstream-base

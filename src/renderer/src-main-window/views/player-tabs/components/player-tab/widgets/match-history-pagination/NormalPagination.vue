@@ -1,0 +1,90 @@
+<template>
+  <div
+    v-if="horizontal"
+    class="match-history-pagination flex items-center gap-2 rounded px-2 py-1 transition-colors"
+    :class="{
+      'rounded bg-neutral-300 shadow-xl shadow-neutral-400 dark:bg-neutral-800 dark:shadow-neutral-800/60':
+        isFloating,
+      'bg-black/5 dark:bg-white/5': !isFloating
+    }"
+  >
+    <QueueSelect v-if="isSgpMatchHistorySource" :disabled="isPaginationDisabled" horizontal />
+
+    <PageFilterControl
+      :active="filterActive"
+      :disabled="isPaginationDisabled"
+      @open-filter="$emit('openFilter')"
+      @clear-filters="$emit('clearFilters')"
+    />
+  </div>
+
+  <div
+    v-else
+    class="match-history-pagination space-y-3 rounded px-4 py-3 transition-colors"
+    :class="{
+      'rounded bg-neutral-300 shadow-xl shadow-neutral-400 dark:bg-neutral-800 dark:shadow-neutral-800/60':
+        isFloating,
+      'bg-black/5 dark:bg-white/5': !isFloating
+    }"
+  >
+    <div class="space-y-2" v-if="isSgpMatchHistorySource">
+      <TooltipWithIcon
+        class="mb-2 text-xs text-black/60 dark:text-white/60"
+        :tooltip="t('playerTabs.profile.sgpQueueOnlyTooltip')"
+      >
+        {{ t('playerTabs.profile.queue') }}
+      </TooltipWithIcon>
+      <QueueSelect :disabled="isPaginationDisabled" />
+    </div>
+
+    <div class="space-y-2">
+      <div class="text-xs text-black/60 dark:text-white/60">分页</div>
+      <PageControls />
+    </div>
+
+    <div class="space-y-2">
+      <div class="text-xs text-black/60 dark:text-white/60">筛选</div>
+      <div class="flex min-w-0 flex-1 items-center gap-2">
+        <PageFilterControl
+          :active="filterActive"
+          :disabled="isPaginationDisabled"
+          @open-filter="$emit('openFilter')"
+          @clear-filters="$emit('clearFilters')"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import TooltipWithIcon from '@renderer-shared/components/TooltipWithIcon.vue'
+import { useTranslation } from 'i18next-vue'
+import { computed } from 'vue'
+
+import { usePlayerTab } from '../../context'
+import { useMatchHistory } from '../../data/match-history'
+import PageControls from './PageControls.vue'
+import PageFilterControl from './PageFilterControl.vue'
+import QueueSelect from './QueueSelect.vue'
+
+defineProps<{
+  horizontal: boolean
+  isFloating: boolean
+  filterActive: boolean
+}>()
+
+defineEmits<{
+  openFilter: []
+  clearFilters: []
+}>()
+
+const { t } = useTranslation()
+
+const { preferredSource, isCrossRegion, sgpApiStatus } = usePlayerTab()
+const { isLoading, collectState } = useMatchHistory()
+
+const isPaginationDisabled = computed(() => isLoading.value || !!collectState.value)
+const isSgpMatchHistorySource = computed(
+  () => (preferredSource.value === 'sgp' || isCrossRegion.value) && sgpApiStatus.value.canUse
+)
+</script>

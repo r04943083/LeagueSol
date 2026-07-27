@@ -1,0 +1,85 @@
+{
+  "cSpell.words": [
+    "Akari",
+    "Akaza",
+    "bannable",
+    "borderless",
+    "cooldown",
+    "eune",
+    "Funami",
+    "gameflow",
+    "gitee",
+    "ibsg",
+    "insta",
+    "Kyoko",
+    "namesets",
+    "nexusblitz",
+    "Opgg",
+    "penta",
+    "Perkstyle",
+    "pickable",
+    "popconfirm",
+    "premade",
+    "PUUID",
+    "puuids",
+    "quadra",
+    "Quickplay",
+    "reconnectable",
+    "regen",
+    "respawn",
+    "RSBEGINNER",
+    "RSINTERMEDIATE",
+    "RSINTRO",
+    "spectatable",
+    "Spellbook",
+    "Subteam",
+    "tcls",
+    "ultbook",
+    "unbannable",
+    "Unconfigured",
+    "unpickable",
+    "UNRANKED",
+    "unspectatable",
+    "writability",
+    "Yuriyuri"
+  ],
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.test.ts, ${capture}.spec.ts",
+    "*.tsx": "${capture}.test.tsx, ${capture}.spec.tsx",
+    "*.js": "${capture}.test.js, ${capture}.spec.js",
+    "*.jsx": "${capture}.test.jsx, ${capture}.spec.jsx",
+    "*.vue": "${capture}.test.ts, ${capture}.spec.ts",
+    "tsconfig.json": "tsconfig.*.json, env.d.ts",
+    "vite.config.*": "jsconfig*, vitest.config.*, cypress.config.*, playwright.config.*",
+    "package.json": "package-lock.json, pnpm*, .yarnrc*, yarn*, .eslint*, eslint*, .oxlint*, oxlint*, .prettier*, prettier*, .editorconfig, electron*, uno.config.*"
+  },
+  "files.associations": {
+    "*.h": "cpp"
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[ignore]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[properties]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "css.lint.unknownAtRules": "ignore",
+  "tailwindCSS.includeLanguages": {
+    "css": "tailwindcss"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
