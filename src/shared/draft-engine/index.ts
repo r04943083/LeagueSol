@@ -15,7 +15,7 @@ export { buildCandidatePool, proficiencyAdjustment } from './candidates'
 export type { CandidateOptions, ChampionProficiency } from './candidates'
 
 export { DraftModel } from './model'
-export type { CompileOptions, PairEffect } from './model'
+export type { CompileOptions, ConcentrationDiagnostics, PairEffect } from './model'
 
 export { clampWinrate, combineRatings, ratingToWinrate, winrateToRating } from './rating'
 

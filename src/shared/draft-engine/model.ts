@@ -56,6 +56,21 @@ function groupKey(role: Role, otherRole: Role): string {
 }
 
 /**
+ * Estimated prior weights, in games, reported per table and per role pairing.
+ *
+ * Worth surfacing rather than hiding inside the compile: the concentration is the single number
+ * deciding how much any pair statistic is allowed to move a recommendation, and it is estimated
+ * from the data. A value in the tens means the observations are trusted; a value in the thousands
+ * means the engine has concluded the apparent spread between pairs is mostly sampling noise, and
+ * recommendations will track raw champion strength no matter how interesting the pair table looks.
+ */
+export interface ConcentrationDiagnostics {
+  champions: number
+  synergyByRolePair: Record<string, number>
+  matchupByRolePair: Record<string, number>
+}
+
+/**
  * `DraftStats` turned into constant-time lookups of ratings and residuals.
  *
  * All shrinkage and residual arithmetic happens once, here, so scoring a candidate is pure
@@ -67,6 +82,15 @@ export class DraftModel {
   private readonly _synergies = new Map<string, PairEffect>()
   private readonly _matchups = new Map<string, PairEffect>()
   private readonly _championsByRole = new Map<Role, number[]>()
+  private readonly _diagnostics: ConcentrationDiagnostics = {
+    champions: 0,
+    synergyByRolePair: {},
+    matchupByRolePair: {}
+  }
+
+  get diagnostics(): ConcentrationDiagnostics {
+    return this._diagnostics
+  }
 
   private constructor(
     readonly patch: string,
@@ -87,6 +111,7 @@ export class DraftModel {
       priorMean: opts.championPriorWinrate
     }))
     const championConcentration = estimateConcentration(championCells, opts.championConcentration)
+    model._diagnostics.champions = championConcentration
 
     for (const champion of stats.champions) {
       const key = championKey(champion.championId, champion.role)
@@ -110,8 +135,20 @@ export class DraftModel {
       }
     }
 
-    model._compilePairs(stats.synergies, model._synergies, synergyBaseline, opts)
-    model._compilePairs(stats.matchups, model._matchups, matchupBaseline, opts)
+    model._compilePairs(
+      stats.synergies,
+      model._synergies,
+      synergyBaseline,
+      opts,
+      model._diagnostics.synergyByRolePair
+    )
+    model._compilePairs(
+      stats.matchups,
+      model._matchups,
+      matchupBaseline,
+      opts,
+      model._diagnostics.matchupByRolePair
+    )
 
     return model
   }
@@ -126,7 +163,8 @@ export class DraftModel {
     records: readonly ChampionPairRecord[],
     target: Map<string, PairEffect>,
     baseline: (championRating: number, otherRating: number) => number,
-    opts: Required<CompileOptions>
+    opts: Required<CompileOptions>,
+    diagnostics: Record<string, number>
   ): void {
     const baselines = new Map<string, number>()
     const cellsByGroup = new Map<string, ObservedCell[]>()
@@ -162,12 +200,12 @@ export class DraftModel {
     const concentrationByGroup = new Map<string, number>()
 
     for (const [group, cells] of cellsByGroup) {
-      concentrationByGroup.set(
-        group,
+      const concentration =
         cells.length >= opts.minCellsPerGroup
           ? estimateConcentration(cells, opts.pairConcentration)
           : globalConcentration
-      )
+      concentrationByGroup.set(group, concentration)
+      diagnostics[group] = concentration
     }
 
     for (const record of records) {

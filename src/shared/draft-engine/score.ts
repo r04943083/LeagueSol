@@ -5,10 +5,16 @@ import type { DraftState, Recommendation, Role, ScoreContribution } from './type
 export interface ScoreOptions {
   /**
    * Weight on the matchup term when the opponent occupies the same role — the lane opponent you
-   * actually trade with. Cross-role matchups still matter (a fed enemy jungler is everyone's
-   * problem) but the published per-matchup numbers are far more attributable within a lane.
+   * actually trade with.
    */
   sameLaneMatchupWeight?: number
+  /**
+   * Weight for an opponent in a different role. A fed enemy jungler is everyone's problem, so this
+   * is modelled — but note that **op.gg publishes no cross-lane matchup data at all**: a full patch
+   * refresh yields 0 cross-lane cells out of ~11,000, every one being top/top, mid/mid and so on.
+   * This weight therefore has no effect on op.gg-sourced statistics today, and exists for a data
+   * source that does carry them (an own Match-V5 crawl would).
+   */
   crossLaneMatchupWeight?: number
   /**
    * Scales every pair term. Pair statistics carry a counter-pick selection bias that nobody

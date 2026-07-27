@@ -26,7 +26,9 @@
     "build:win": "npm run build && electron-builder --win --config",
     "build:win:native": "npm run build:native:win && npm run build:win",
     "gen-types": "tsc --declaration --emitDeclarationOnly --outDir ./out/types -p tsconfig.node.json",
-    "build:mac": "npm run build && electron-builder --mac --config"
+    "build:mac": "npm run build && electron-builder --mac --config",
+    "refresh-stats": "tsx --tsconfig tsconfig.node.json tools/refresh-stats.ts",
+    "advise": "tsx --tsconfig tsconfig.node.json tools/advise.ts"
   },
   "dependencies": {
     "@babel/runtime": "^8.0.0",
@@ -104,6 +106,7 @@
     "semver": "^7.8.5",
     "storybook": "^10.4.6",
     "tailwindcss": "^4.3.2",
+    "tsx": "^4.20.0",
     "typescript": "^6.0.3",
     "undici": "^6.25.0",
     "vfonts": "^0.0.3",

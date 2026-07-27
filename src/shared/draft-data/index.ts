@@ -9,6 +9,8 @@
 export { DraftStatsCache, MemoryCacheStorage, cacheFileName } from './cache'
 export type { CacheEntry, CacheKey, CacheOptions, CacheStorage } from './cache'
 
+export { FsCacheStorage } from './fs-cache-storage'
+
 export {
   fetchChampionCatalog,
   fetchLatestPatch,
