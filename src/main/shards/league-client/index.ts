@@ -31,6 +31,7 @@ import {
   type LeagueClientMainContext
 } from './context'
 import { LeagueClientIpcHandlers } from './ipc-handlers'
+import { resolveLcuEndpoint } from './endpoint'
 import { LeagueClientData } from './lc-state'
 import { LeagueClientSettings, LeagueClientState } from './state'
 
@@ -491,7 +492,7 @@ export class LeagueClientMain implements IAkariShardInitDispose {
         }
 
         this._webSocket = await this._wsPromisified(
-          `wss://riot:${cmd.authToken}@127.0.0.1:${cmd.port}`,
+          resolveLcuEndpoint(cmd.port, cmd.authToken).webSocketUrl,
           {
             headers: {
               Authorization: `Basic ${Buffer.from(`riot:${cmd.authToken}`).toString('base64')}`
@@ -534,7 +535,7 @@ export class LeagueClientMain implements IAkariShardInitDispose {
 
   private async _initHttpInstance(auth: UxCommandLine) {
     this._httpClient = axios.create({
-      baseURL: `https://127.0.0.1:${auth.port}`,
+      baseURL: resolveLcuEndpoint(auth.port, auth.authToken).baseUrl,
       headers: {
         Authorization: `Basic ${Buffer.from(`riot:${auth.authToken}`).toString('base64')}`
       },
@@ -635,7 +636,7 @@ export class LeagueClientMain implements IAkariShardInitDispose {
    */
   async peekClient(auth: UxCommandLine) {
     const c = axios.create({
-      baseURL: `https://127.0.0.1:${auth.port}`,
+      baseURL: resolveLcuEndpoint(auth.port, auth.authToken).baseUrl,
       headers: {
         Authorization: `Basic ${Buffer.from(`riot:${auth.authToken}`).toString('base64')}`
       },

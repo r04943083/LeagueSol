@@ -29,7 +29,9 @@
     "build:mac": "npm run build && electron-builder --mac --config",
     "refresh-stats": "tsx --tsconfig tsconfig.node.json tools/refresh-stats.ts",
     "advise": "tsx --tsconfig tsconfig.node.json tools/advise.ts",
-    "publish-datasets": "tsx --tsconfig tsconfig.node.json tools/publish-datasets.ts"
+    "publish-datasets": "tsx --tsconfig tsconfig.node.json tools/publish-datasets.ts",
+    "lcu-record": "tsx --tsconfig tsconfig.node.json tools/lcu-record.ts",
+    "lcu-replay": "tsx --tsconfig tsconfig.node.json tools/lcu-replay.ts"
   },
   "dependencies": {
     "@babel/runtime": "^8.0.0",
