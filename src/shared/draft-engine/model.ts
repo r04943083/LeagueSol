@@ -42,12 +42,7 @@ function championKey(championId: number, role: Role): string {
   return `${championId}:${role}`
 }
 
-function pairKey(
-  championId: number,
-  role: Role,
-  otherChampionId: number,
-  otherRole: Role
-): string {
+function pairKey(championId: number, role: Role, otherChampionId: number, otherRole: Role): string {
   return `${championId}:${role}|${otherChampionId}:${otherRole}`
 }
 

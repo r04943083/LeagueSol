@@ -187,7 +187,9 @@ export async function fetchAllCounters(
 
       const target = targets[index]
       try {
-        records.push(...(await fetchCounters(helper, target.championId, target.role, scope, { signal })))
+        records.push(
+          ...(await fetchCounters(helper, target.championId, target.role, scope, { signal }))
+        )
       } catch (error) {
         if (onError) {
           onError(target, error)

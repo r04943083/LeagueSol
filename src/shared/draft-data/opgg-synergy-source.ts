@@ -131,7 +131,11 @@ export function toSynergyRecords(
     const play = entry.play
     const win = entry.win
 
-    if (typeof otherChampionId !== 'number' || typeof play !== 'number' || typeof win !== 'number') {
+    if (
+      typeof otherChampionId !== 'number' ||
+      typeof play !== 'number' ||
+      typeof win !== 'number'
+    ) {
       continue
     }
 

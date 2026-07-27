@@ -61,9 +61,7 @@ export function buildCandidatePool(
 ): number[] {
   const { minGames } = { ...DEFAULT_CANDIDATE_OPTIONS, ...options }
 
-  return proficiencies
-    .filter((p) => p.owned && p.games >= minGames)
-    .map((p) => p.championId)
+  return proficiencies.filter((p) => p.owned && p.games >= minGames).map((p) => p.championId)
 }
 
 /**

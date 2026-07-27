@@ -6,7 +6,12 @@ import type { ChampionPairRecord, ChampionRoleRecord, DraftStats, Role } from '.
 
 const BIG = 200_000
 
-function champion(championId: number, role: Role, winrate: number, games = BIG): ChampionRoleRecord {
+function champion(
+  championId: number,
+  role: Role,
+  winrate: number,
+  games = BIG
+): ChampionRoleRecord {
   return { championId, role, games, wins: Math.round(games * winrate) }
 }
 
@@ -35,7 +40,9 @@ function pair(
 function buildStats(overrides: Partial<DraftStats> = {}): DraftStats {
   const strongAdc = 0.55
   const averageSupport = 0.5
-  const noInteractionDuo = ratingToWinrate(winrateToRating(strongAdc) + winrateToRating(averageSupport))
+  const noInteractionDuo = ratingToWinrate(
+    winrateToRating(strongAdc) + winrateToRating(averageSupport)
+  )
 
   return {
     patch: '16.14',
@@ -109,10 +116,7 @@ describe('DraftModel', () => {
 
   it('reports evidence proportional to sample size', () => {
     const stats = buildStats({
-      synergies: [
-        pair(1, 'adc', 2, 'support', 0.6, 40),
-        pair(1, 'adc', 3, 'support', 0.6, 400_000)
-      ]
+      synergies: [pair(1, 'adc', 2, 'support', 0.6, 40), pair(1, 'adc', 3, 'support', 0.6, 400_000)]
     })
     const model = DraftModel.compile(stats)
 

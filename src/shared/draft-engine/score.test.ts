@@ -65,11 +65,15 @@ const model = DraftModel.compile(buildStats())
 
 describe('scoreCandidate', () => {
   it('decomposes the total into terms that add back up', () => {
-    const result = scoreCandidate(model, {
-      allies: [{ championId: 10, role: 'adc' }],
-      enemies: [{ championId: 20, role: 'support' }],
-      role: 'support'
-    }, 1)
+    const result = scoreCandidate(
+      model,
+      {
+        allies: [{ championId: 10, role: 'adc' }],
+        enemies: [{ championId: 20, role: 'support' }],
+        role: 'support'
+      },
+      1
+    )
 
     const summed = result.contributions.reduce((s, c) => s + c.rating, 0)
     expect(summed).toBeCloseTo(result.rating, 10)
@@ -77,11 +81,15 @@ describe('scoreCandidate', () => {
   })
 
   it('labels each term with the champion it came from', () => {
-    const result = scoreCandidate(model, {
-      allies: [{ championId: 10, role: 'adc' }],
-      enemies: [{ championId: 20, role: 'support' }],
-      role: 'support'
-    }, 1)
+    const result = scoreCandidate(
+      model,
+      {
+        allies: [{ championId: 10, role: 'adc' }],
+        enemies: [{ championId: 20, role: 'support' }],
+        role: 'support'
+      },
+      1
+    )
 
     expect(result.contributions.find((c) => c.kind === 'base')).toBeDefined()
     const synergy = result.contributions.find((c) => c.kind === 'synergy')
@@ -92,11 +100,15 @@ describe('scoreCandidate', () => {
   })
 
   it('omits terms for champions with no data rather than emitting zeros', () => {
-    const result = scoreCandidate(model, {
-      allies: [{ championId: 999, role: 'top' }],
-      enemies: [],
-      role: 'support'
-    }, 1)
+    const result = scoreCandidate(
+      model,
+      {
+        allies: [{ championId: 999, role: 'top' }],
+        enemies: [],
+        role: 'support'
+      },
+      1
+    )
 
     expect(result.contributions).toHaveLength(1)
     expect(result.contributions[0].kind).toBe('base')
@@ -105,17 +117,25 @@ describe('scoreCandidate', () => {
   it('weights a same-lane opponent above a cross-lane one', () => {
     // Champion 2 counters the enemy mid. That should count for something, but less than countering
     // the champion it stands next to for the whole laning phase.
-    const sameLane = scoreCandidate(model, {
-      allies: [],
-      enemies: [{ championId: 20, role: 'support' }],
-      role: 'support'
-    }, 3)
+    const sameLane = scoreCandidate(
+      model,
+      {
+        allies: [],
+        enemies: [{ championId: 20, role: 'support' }],
+        role: 'support'
+      },
+      3
+    )
 
-    const crossLane = scoreCandidate(model, {
-      allies: [],
-      enemies: [{ championId: 30, role: 'mid' }],
-      role: 'support'
-    }, 2)
+    const crossLane = scoreCandidate(
+      model,
+      {
+        allies: [],
+        enemies: [{ championId: 30, role: 'mid' }],
+        role: 'support'
+      },
+      2
+    )
 
     const sameLaneTerm = sameLane.contributions.find((c) => c.kind === 'matchup')!.rating
     const crossLaneTerm = crossLane.contributions.find((c) => c.kind === 'matchup')!.rating

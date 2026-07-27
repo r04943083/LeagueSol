@@ -1,11 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import {
-  ObservedCell,
-  estimateConcentration,
-  evidenceWeight,
-  shrinkWinrate
-} from './shrinkage'
+import { ObservedCell, estimateConcentration, evidenceWeight, shrinkWinrate } from './shrinkage'
 
 /** Deterministic PRNG so the sampling-noise tests cannot flake. */
 function mulberry32(seed: number): () => number {
@@ -146,9 +141,9 @@ describe('estimateConcentration', () => {
 
   it('falls back to maximal shrinkage without enough usable cells', () => {
     expect(estimateConcentration([], { max: 999 })).toBe(999)
-    expect(
-      estimateConcentration([{ games: 1000, wins: 500, priorMean: 0.5 }], { max: 999 })
-    ).toBe(999)
+    expect(estimateConcentration([{ games: 1000, wins: 500, priorMean: 0.5 }], { max: 999 })).toBe(
+      999
+    )
   })
 
   it('ignores cells below the minimum sample size', () => {
@@ -165,7 +160,11 @@ describe('estimateConcentration', () => {
     const rng = mulberry32(11)
     const cells: ObservedCell[] = []
     for (let i = 0; i < 300; i++) {
-      cells.push({ games: 500, wins: sampleBinomial(500, 0.5 + (i % 7) * 0.02, rng), priorMean: 0.5 })
+      cells.push({
+        games: 500,
+        wins: sampleBinomial(500, 0.5 + (i % 7) * 0.02, rng),
+        priorMean: 0.5
+      })
     }
 
     expect(estimateConcentration(cells, { min: 5000, max: 1e9 })).toBeGreaterThanOrEqual(5000)

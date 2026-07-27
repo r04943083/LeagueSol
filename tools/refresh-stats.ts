@@ -1,4 +1,3 @@
-import type { DraftStats } from '@shared/draft-engine'
 import {
   DraftStatsCache,
   FsCacheStorage,
@@ -6,6 +5,7 @@ import {
   fetchChampionCatalog,
   fetchLatestPatch
 } from '@shared/draft-data'
+import type { DraftStats } from '@shared/draft-engine'
 import { OpggHttpApiAxiosHelper } from '@shared/http-api-axios-helper/opgg'
 import type { RegionType, TierType } from '@shared/types/opgg'
 import axios from 'axios'
@@ -58,11 +58,15 @@ function parseArgs(argv: string[]): Args {
 function summarise(stats: DraftStats): void {
   const games = (records: { games: number }[]) => records.reduce((s, r) => s + r.games, 0)
 
-  const pairGames = [...stats.synergies, ...stats.matchups].map((r) => r.games).sort((a, b) => a - b)
+  const pairGames = [...stats.synergies, ...stats.matchups]
+    .map((r) => r.games)
+    .sort((a, b) => a - b)
   const median = pairGames.length ? pairGames[Math.floor(pairGames.length / 2)] : 0
 
   console.log(`\npatch ${stats.patch}  ${stats.region}/${stats.tier}`)
-  console.log(`  champion/role rows : ${stats.champions.length}  (${games(stats.champions).toLocaleString()} games)`)
+  console.log(
+    `  champion/role rows : ${stats.champions.length}  (${games(stats.champions).toLocaleString()} games)`
+  )
   console.log(`  matchup cells      : ${stats.matchups.length.toLocaleString()}`)
   console.log(`  synergy cells      : ${stats.synergies.length.toLocaleString()}`)
   console.log(`  median cell size   : ${median.toLocaleString()} games`)

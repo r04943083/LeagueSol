@@ -81,8 +81,9 @@ describeLive('draft pipeline (live)', () => {
     })
 
     const allyAdc = synergies[0].otherChampionId
-    const enemySupport = matchups.find((m) => !supports.some((s) => s.championId === m.otherChampionId))!
-      .otherChampionId
+    const enemySupport = matchups.find(
+      (m) => !supports.some((s) => s.championId === m.otherChampionId)
+    )!.otherChampionId
 
     const results = advise(
       model,

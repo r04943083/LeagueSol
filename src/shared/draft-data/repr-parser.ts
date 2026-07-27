@@ -99,8 +99,7 @@ class ExpressionReader {
       if (ch === '\\') {
         const next = this._src[this._pos + 1]
         // The transport JSON-escapes the payload, so the usual escapes appear here verbatim.
-        const mapped =
-          next === 'n' ? '\n' : next === 't' ? '\t' : next === 'r' ? '\r' : next
+        const mapped = next === 'n' ? '\n' : next === 't' ? '\t' : next === 'r' ? '\r' : next
         out += mapped
         this._pos += 2
         continue

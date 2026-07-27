@@ -11,11 +11,7 @@ export type { CacheEntry, CacheKey, CacheOptions, CacheStorage } from './cache'
 
 export { FsCacheStorage } from './fs-cache-storage'
 
-export {
-  fetchChampionCatalog,
-  fetchLatestPatch,
-  toMcpChampionName
-} from './champion-static'
+export { fetchChampionCatalog, fetchLatestPatch, toMcpChampionName } from './champion-static'
 export type { ChampionCatalog, ChampionIdentity } from './champion-static'
 
 export {
@@ -34,7 +30,12 @@ export type {
   OpggScope
 } from './opgg-champion-source'
 
-export { SYNERGY_ROLE_PAIRS, fetchSynergies, parseMcpEnvelope, toSynergyRecords } from './opgg-synergy-source'
+export {
+  SYNERGY_ROLE_PAIRS,
+  fetchSynergies,
+  parseMcpEnvelope,
+  toSynergyRecords
+} from './opgg-synergy-source'
 export type { McpClientOptions, SynergyQuery } from './opgg-synergy-source'
 
 export { ReprParseError, parseRepr } from './repr-parser'

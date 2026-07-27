@@ -51,7 +51,13 @@ function parseArgs(argv: string[]): Args {
     throw new Error(`--role must be one of ${ROLES.join(', ')}, received ${role}`)
   }
 
-  const list = (value?: string) => (value ? value.split(',').map((s) => s.trim()).filter(Boolean) : [])
+  const list = (value?: string) =>
+    value
+      ? value
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : []
 
   return {
     role,

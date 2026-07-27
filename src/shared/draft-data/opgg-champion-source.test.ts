@@ -84,10 +84,12 @@ describe('fetchChampionRates', () => {
 
     const result = await fetchChampionRates(helper as never, SCOPE)
 
-    expect(result.records.filter((r) => r.championId === 103).map((r) => r.role).sort()).toEqual([
-      'mid',
-      'support'
-    ])
+    expect(
+      result.records
+        .filter((r) => r.championId === 103)
+        .map((r) => r.role)
+        .sort()
+    ).toEqual(['mid', 'support'])
   })
 
   it('drops unrecognised positions, zero-play entries and missing position lists', async () => {
@@ -133,8 +135,22 @@ describe('fetchCounters', () => {
     const records = await fetchCounters(helper as never, 103, 'mid', SCOPE)
 
     expect(records).toEqual([
-      { championId: 103, role: 'mid', otherChampionId: 517, otherRole: 'mid', games: 2478, wins: 1255 },
-      { championId: 103, role: 'mid', otherChampionId: 112, otherRole: 'mid', games: 1653, wins: 803 }
+      {
+        championId: 103,
+        role: 'mid',
+        otherChampionId: 517,
+        otherRole: 'mid',
+        games: 2478,
+        wins: 1255
+      },
+      {
+        championId: 103,
+        role: 'mid',
+        otherChampionId: 112,
+        otherRole: 'mid',
+        games: 1653,
+        wins: 803
+      }
     ])
   })
 
@@ -170,11 +186,15 @@ describe('fetchAllCounters', () => {
   it('skips a champion that fails rather than aborting the refresh', async () => {
     // One unavailable champion should degrade that champion's advice, not the whole patch refresh.
     const helper = {
-      getChampion: vi.fn().mockImplementation((_r, _m, championId) =>
-        championId === 2
-          ? Promise.reject(new Error('502'))
-          : Promise.resolve({ data: { data: { counters: [{ champion_id: 9, play: 10, win: 5 }] } } })
-      )
+      getChampion: vi
+        .fn()
+        .mockImplementation((_r, _m, championId) =>
+          championId === 2
+            ? Promise.reject(new Error('502'))
+            : Promise.resolve({
+                data: { data: { counters: [{ champion_id: 9, play: 10, win: 5 }] } }
+              })
+        )
     }
     const onError = vi.fn()
 

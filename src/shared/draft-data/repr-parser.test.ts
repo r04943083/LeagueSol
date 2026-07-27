@@ -73,9 +73,7 @@ describe('parseRepr', () => {
 
   it('handles strings containing commas and parentheses', () => {
     // Champion names are not always tidy: Kai'Sa, Cho'Gath, Rek'Sai.
-    const parsed = parseRepr(
-      'class P: name,note\n\nP("Kai\'Sa","a (tricky), name")'
-    ) as ReprObject
+    const parsed = parseRepr('class P: name,note\n\nP("Kai\'Sa","a (tricky), name")') as ReprObject
     expect(parsed.name).toBe("Kai'Sa")
     expect(parsed.note).toBe('a (tricky), name')
   })

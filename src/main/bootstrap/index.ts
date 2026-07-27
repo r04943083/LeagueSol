@@ -11,6 +11,7 @@ import { AutoMiscMain } from '@main/shards/auto-misc'
 import { AutoSelectMain } from '@main/shards/auto-select'
 import { ClientInstallationMain } from '@main/shards/client-installation'
 import { ConfigMigrateMain } from '@main/shards/config-migrate'
+import { DraftAdvisorMain } from '@main/shards/draft-advisor'
 import { ExtraAssetsMain } from '@main/shards/extra-assets'
 import { FeatureGatingMain } from '@main/shards/feature-gating'
 import { GameClientMain } from '@main/shards/game-client'
@@ -334,6 +335,7 @@ export function bootstrap() {
     manager.use(AutoGameflowMain)
     manager.use(AutoMiscMain)
     manager.use(AutoSelectMain)
+    manager.use(DraftAdvisorMain)
     manager.use(InGameSendMain)
     manager.use(OngoingGameMain)
     manager.use(RespawnTimerMain)
