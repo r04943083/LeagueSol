@@ -186,15 +186,13 @@ describe('fetchAllCounters', () => {
   it('skips a champion that fails rather than aborting the refresh', async () => {
     // One unavailable champion should degrade that champion's advice, not the whole patch refresh.
     const helper = {
-      getChampion: vi
-        .fn()
-        .mockImplementation((_r, _m, championId) =>
-          championId === 2
-            ? Promise.reject(new Error('502'))
-            : Promise.resolve({
-                data: { data: { counters: [{ champion_id: 9, play: 10, win: 5 }] } }
-              })
-        )
+      getChampion: vi.fn().mockImplementation((_r, _m, championId) =>
+        championId === 2
+          ? Promise.reject(new Error('502'))
+          : Promise.resolve({
+              data: { data: { counters: [{ champion_id: 9, play: 10, win: 5 }] } }
+            })
+      )
     }
     const onError = vi.fn()
 

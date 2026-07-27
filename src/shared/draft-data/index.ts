@@ -11,6 +11,23 @@ export type { CacheEntry, CacheKey, CacheOptions, CacheStorage } from './cache'
 
 export { FsCacheStorage } from './fs-cache-storage'
 
+export {
+  DATASET_MANIFEST_NAME,
+  DATASET_SCHEMA_VERSION,
+  comparePatches,
+  datasetFileName,
+  resolveDataset
+} from './dataset-manifest'
+export type { DatasetEntry, DatasetManifest } from './dataset-manifest'
+
+export {
+  DEFAULT_DATASET_BASE_URL,
+  downloadDataset,
+  fetchDatasetManifest,
+  fetchPublishedStats
+} from './dataset-source'
+export type { DatasetSourceOptions } from './dataset-source'
+
 export { fetchChampionCatalog, fetchLatestPatch, toMcpChampionName } from './champion-static'
 export type { ChampionCatalog, ChampionIdentity } from './champion-static'
 

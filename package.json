@@ -28,7 +28,8 @@
     "gen-types": "tsc --declaration --emitDeclarationOnly --outDir ./out/types -p tsconfig.node.json",
     "build:mac": "npm run build && electron-builder --mac --config",
     "refresh-stats": "tsx --tsconfig tsconfig.node.json tools/refresh-stats.ts",
-    "advise": "tsx --tsconfig tsconfig.node.json tools/advise.ts"
+    "advise": "tsx --tsconfig tsconfig.node.json tools/advise.ts",
+    "publish-datasets": "tsx --tsconfig tsconfig.node.json tools/publish-datasets.ts"
   },
   "dependencies": {
     "@babel/runtime": "^8.0.0",

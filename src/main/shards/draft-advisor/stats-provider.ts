@@ -3,9 +3,11 @@ import {
   FsCacheStorage,
   assembleDraftStats,
   fetchChampionCatalog,
-  fetchLatestPatch
+  fetchLatestPatch,
+  fetchPublishedStats
 } from '@shared/draft-data'
 import { DraftModel } from '@shared/draft-engine'
+import type { DraftStats } from '@shared/draft-engine'
 import { OpggHttpApiAxiosHelper } from '@shared/http-api-axios-helper/opgg'
 import type { DraftStatsStatus } from '@shared/shards/draft-advisor'
 import type { RegionType, TierType } from '@shared/types/opgg'
@@ -67,18 +69,7 @@ export class DraftStatsProvider {
 
   private async _load(region: RegionType, tier: TierType): Promise<void> {
     try {
-      this._onStatus({ kind: 'loading', stage: 'champion rates', completed: 0, total: 0 })
-
-      const catalog = await fetchChampionCatalog(await fetchLatestPatch())
-
-      const stats = await assembleDraftStats(this._helper, {
-        scope: { region, tier },
-        catalog,
-        cache: this._cache,
-        onProgress: (stage, completed, total) => {
-          this._onStatus({ kind: 'loading', stage, completed, total })
-        }
-      })
+      const stats = await this._obtain(region, tier)
 
       this._model = DraftModel.compile(stats)
       this._onStatus({ kind: 'ready', patch: stats.patch, region: stats.region, tier: stats.tier })
@@ -94,5 +85,44 @@ export class DraftStatsProvider {
         message: error instanceof Error ? error.message : String(error)
       })
     }
+  }
+
+  /**
+   * Prefers the dataset published by CI, and only assembles one locally as a fallback.
+   *
+   * This ordering is the difference between an application that scales and one that does not. The
+   * published dataset is two requests and about 130 KB; assembling the same thing here is ~680
+   * requests over several minutes, and every installation doing that would multiply the load on
+   * op.gg by the user count. The local path exists for a scope CI does not publish, or while the
+   * release is briefly unavailable — not as the normal route.
+   */
+  private async _obtain(region: RegionType, tier: TierType): Promise<DraftStats> {
+    this._onStatus({ kind: 'loading', stage: 'published dataset', completed: 0, total: 1 })
+
+    try {
+      const stats = await fetchPublishedStats(region, tier)
+      this._logger.info(`using the published dataset for ${region}/${tier}`)
+      await this._cache.write(
+        'draft-stats',
+        { patch: stats.patch, region: stats.region, tier: stats.tier },
+        stats
+      )
+      return stats
+    } catch (error) {
+      this._logger.info(
+        `no published dataset for ${region}/${tier} (${error}); assembling locally instead`
+      )
+    }
+
+    const catalog = await fetchChampionCatalog(await fetchLatestPatch())
+
+    return assembleDraftStats(this._helper, {
+      scope: { region, tier },
+      catalog,
+      cache: this._cache,
+      onProgress: (stage, completed, total) => {
+        this._onStatus({ kind: 'loading', stage, completed, total })
+      }
+    })
   }
 }

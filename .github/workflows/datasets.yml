@@ -1,0 +1,78 @@
+name: Publish draft datasets
+
+# Assembling a dataset costs roughly 680 requests against op.gg and several minutes. Doing it here,
+# once per run, is what keeps every installation from doing it themselves — which would multiply
+# that load by the user count and get the application blocked.
+on:
+  schedule:
+    # Twice weekly. Patches land fortnightly on Wednesdays, and win rates keep moving for a few days
+    # afterwards, so a second run mid-cycle picks up the settled numbers.
+    - cron: '0 6 * * 1,4'
+  workflow_dispatch:
+    inputs:
+      scopes:
+        description: 'Comma-separated region:tier pairs'
+        required: false
+        default: 'global:emerald_plus,kr:emerald_plus'
+
+concurrency:
+  group: publish-datasets
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        # The datasets job needs the shared code and tsx only. Electron's postinstall downloads a
+        # ~100 MB binary that nothing here uses.
+        run: yarn install --mode=skip-build
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+
+      - name: Assemble datasets
+        run: >
+          yarn publish-datasets
+          --scopes "${{ github.event.inputs.scopes || 'global:emerald_plus,kr:emerald_plus' }}"
+          --out dist-datasets
+
+      - name: Summarise
+        run: |
+          echo '### Published datasets' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          ls -lh dist-datasets >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat dist-datasets/index.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish to the rolling datasets release
+        # A fixed tag with replaced assets keeps download URLs stable, so a shipped binary never
+        # needs to know which patch is current.
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: datasets
+          name: Draft datasets
+          body: |
+            Champion statistics assembled from OP.GG, refreshed automatically.
+
+            Clients download `index.json` and the dataset it points at. Assets on this tag are
+            replaced in place, so these URLs are stable across patches.
+
+            Data © OP.GG. LeagueSol isn't endorsed by Riot Games.
+          files: dist-datasets/*
+          prerelease: false
+          make_latest: false
