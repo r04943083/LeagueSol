@@ -81,6 +81,20 @@ synergy *differences* transfer between regions because they are driven by champi
 identical on a given patch; absolute win rates, pick rates and tier lists do not transfer and are
 not shown in that situation.
 
+### How the data reaches you
+
+Assembling a dataset takes about 680 requests and six minutes. LeagueSol does **not** do that on
+your machine. A scheduled workflow assembles it once per patch and publishes it to a
+[rolling release](https://github.com/r04943083/LeagueSol/releases/tag/datasets); the app downloads a
+manifest and a ~124 KB gzipped file, and that is the whole of its network use for statistics.
+
+This matters beyond start-up time. If every installation assembled its own, a thousand users would
+put ~680,000 requests per patch onto a free service — which would get the app blocked, and would
+deserve to be. One refresh per patch, shared, is the only version of this that scales.
+
+A local assembly path still exists for a region and tier the workflow does not publish, and it is
+what `yarn refresh-stats` runs, but it is the fallback rather than the normal route.
+
 ---
 
 ## Scope and conduct
