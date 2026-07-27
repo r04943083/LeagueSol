@@ -1,0 +1,11 @@
+draftAdvisor:
+  title: 选角推荐
+  waiting: 进入选人阶段后显示推荐
+  loading: 正在加载数据 ({{stage}})
+  error: 数据加载失败：{{message}}
+  foreignData: 当前区服无统计数据，以下为外服数据。对位与搭档的相对差值可参考，绝对胜率与强度榜不适用。
+  term:
+    base: 本体
+    with: 配 {{champion}}
+    against: 对 {{champion}}
+    games: 样本 {{games}} 局

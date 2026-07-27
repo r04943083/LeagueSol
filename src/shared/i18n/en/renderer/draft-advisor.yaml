@@ -1,0 +1,11 @@
+draftAdvisor:
+  title: Draft advice
+  waiting: Recommendations appear during champion select
+  loading: Loading statistics ({{stage}})
+  error: 'Could not load statistics: {{message}}'
+  foreignData: No statistics exist for this server, so these are from another region. Matchup and synergy differences still apply; absolute win rates and tier lists do not.
+  term:
+    base: base
+    with: with {{champion}}
+    against: vs {{champion}}
+    games: '{{games}} games'

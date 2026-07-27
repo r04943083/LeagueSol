@@ -3,6 +3,7 @@ import { AkariApiRenderer } from '@renderer-shared/shards/akari-api'
 import { AkariProtocolRenderer } from '@renderer-shared/shards/akari-protocol'
 import { AppCommonRenderer } from '@renderer-shared/shards/app-common'
 import { FeatureGatingRenderer } from '@renderer-shared/shards/feature-gating'
+import { DraftAdvisorRenderer } from '@renderer-shared/shards/draft-advisor'
 import { AkariIpcRenderer } from '@renderer-shared/shards/ipc'
 import { LeagueClientRenderer } from '@renderer-shared/shards/league-client'
 import { LoggerRenderer } from '@renderer-shared/shards/logger'
@@ -23,6 +24,7 @@ manager.use(FeatureGatingRenderer)
 manager.use(LeagueClientRenderer)
 manager.use(LoggerRenderer)
 manager.use(OngoingGameRenderer)
+manager.use(DraftAdvisorRenderer)
 manager.use(PiniaMobxUtilsRenderer)
 manager.use(SettingUtilsRenderer)
 manager.use(SetupInAppScopeRenderer) // 并非使用, 仅满足 LeagueClientRenderer 的依赖需求

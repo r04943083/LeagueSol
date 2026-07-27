@@ -15,6 +15,7 @@
         :hide-privacy="as.settings.streamerMode"
       />
       <SetupInAppScope />
+      <DraftAdvisorPanel v-if="das.settings.enabled" />
       <OngoingGameProvider :value="ongoingGame">
         <OngoingGamePanel
           :content-width="containerWidth"
@@ -28,6 +29,8 @@
 </template>
 
 <script setup lang="ts">
+import DraftAdvisorPanel from './DraftAdvisorPanel.vue'
+import { useDraftAdvisorStore } from '@renderer-shared/shards/draft-advisor/store'
 import ConnectedMatchPreviewer from '@renderer-shared/components/match-preview/ConnectedMatchPreviewer.vue'
 import {
   type MatchPreviewPayload,
@@ -47,6 +50,7 @@ import { useElementSize } from '@vueuse/core'
 import { ref, shallowRef, useTemplateRef, watch } from 'vue'
 
 const ogws = useOngoingGameWindowStore()
+const das = useDraftAdvisorStore()
 const ongoingGame = createAkariOngoingGameProvider()
 
 const containerEl = useTemplateRef('containerEl')

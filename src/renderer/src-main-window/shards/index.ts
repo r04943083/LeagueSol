@@ -11,6 +11,7 @@ import { ExtraAssetsRenderer } from '@renderer-shared/shards/extra-assets'
 import { FeatureGatingRenderer } from '@renderer-shared/shards/feature-gating'
 import { GameClientRenderer } from '@renderer-shared/shards/game-client'
 import { InGameSendRenderer } from '@renderer-shared/shards/in-game-send'
+import { DraftAdvisorRenderer } from '@renderer-shared/shards/draft-advisor'
 import { AkariIpcRenderer } from '@renderer-shared/shards/ipc'
 import { KeyboardShortcutsRenderer } from '@renderer-shared/shards/keyboard-shortcut'
 import { LeagueClientRenderer } from '@renderer-shared/shards/league-client'
@@ -44,6 +45,7 @@ manager.use(AppCommonRenderer)
 manager.use(AutoChampConfigRenderer)
 manager.use(AutoGameflowRenderer)
 manager.use(AutoSelectRenderer)
+manager.use(DraftAdvisorRenderer)
 manager.use(AutoMiscRenderer)
 manager.use(ClientInstallationRenderer)
 manager.use(ExtraAssetsRenderer)
